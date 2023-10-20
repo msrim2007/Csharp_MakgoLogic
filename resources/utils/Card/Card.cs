@@ -3,7 +3,9 @@ class Card {
     private int cardMonth;
     private int cardType; // 종류
     private int cardOption; // 특수패 (Normal, Rain, Double, Triple, Bird, Red, Blue)
+    private bool isTake = false;
     private bool isOpen = false;
+    private bool shaked = false;
     
     public Card(int month , int type, int option) {
         if (month < 0 || month > 12) return;
@@ -21,6 +23,10 @@ class Card {
     public int getCardType() { return this.cardType; }
     public int getCardOption() { return this.cardOption; }
     public void setOpen(bool open) { this.isOpen = open; }
+    public void setShake(bool shake) { this.shaked = shake; }
+    public bool isShaked() { return this.shaked; }
+    public bool getIsTake() { return this.isTake; }
+    public void setIsTake(bool take) { this.isTake = take; }
 
     public override string ToString() {
         string str = "[";

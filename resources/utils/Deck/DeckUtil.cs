@@ -13,6 +13,50 @@ class DeckUtil {
         return cardList;
     }
 
+    public static void InitListByMonth(Deck deck) {
+        // (1월 ~ 12월)
+        ResetListByMonth(deck.getListByMonth());
+        deck.getCardList().ForEach(card => {
+            deck.addListByMonth(card.getCardMonth(), card);
+        });
+    }
+
+    public static int[] GetMonthCnt(Deck deck) {
+        int[] monthCnt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        deck.getCardList().ForEach(card => { ++monthCnt[card.getCardMonth()]; });
+        return monthCnt;
+    }
+
+    public static void Stop(Deck deck) { deck.setWin(true); }
+
+    public static bool isPresident(Deck deck) {
+        bool president = false;
+        int[] monthCnt = GetMonthCnt(deck);
+        foreach (int i in monthCnt) {
+            if (i == 4) {
+                president = true;
+                break;
+            }
+        }
+
+        return president;
+    }
+
+    public static void Shake(Deck deck, int month) {
+        deck.scoreList.shake();
+        foreach (Card card in deck.getCardList()) {
+            if (card.getCardMonth() == month) {
+                card.setShake(true);
+            }
+        }
+    }
+
+    private static void ResetListByMonth(List<Card>[] arr) {
+        for (int i = 0; i < arr.Length; ++i) {
+            arr[i] = new();
+        }
+    }
+    
     private static readonly List<List<int>> cardInfos = new() {
         new List<int> {0, 3, 2},
         new List<int> {0, 3, 2},
