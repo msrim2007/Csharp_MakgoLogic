@@ -22,6 +22,7 @@ class Score {
         this.goScore = this.score;
     }
 
+    public void setScore(int score) { this.score = score; }
     public void setSteal() { this.stealCount = 0; }
     public int getSteal() { return this.stealCount; }
     public bool shaked() { return this.isShake; }
@@ -136,12 +137,6 @@ class Score {
         if (bloodScore >= 10) {
             this.score += bloodScore - 9;
         }
-
-        // 흔듬
-        if (this.isShake) this.score *= 2;
-
-        // GO
-        if (this.goCount > 0) this.score *= ((int) Math.Pow(2, this.goCount));
     }
 
     public override string ToString() {

@@ -59,6 +59,20 @@
         }
 
         // 최종 점수 처리 해야함
+        int score = 0;
+        Deck win = PlayUtil.GetWinDeck(play);
+        if (!win.Equals(deck)) {
+            score += win.scoreList.getScore();
+
+            // 흔듬
+            if (win.scoreList.shaked()) score *= 2;
+
+            // GO
+            if (win.scoreList.getGoCount() > 0) score *= ((int) Math.Pow(2, win.scoreList.getGoCount()));
+
+            // 피박 멍박 등 계산
+            win.scoreList.setScore(score);
+        }
 
         WriteField();
         WriteScore();
@@ -344,10 +358,9 @@
         }
         turnDeck.scoreList.setSteal();
 
-        WriteScore();
-
         // 점수 확인해서 났는지 여부 확인 (고 스톱 처리)
         turnDeck.scoreList.scoreCheck();
+        WriteScore();
         if (turnDeck.scoreList.getScore() >= 7) {
             if (turnDeck.scoreList.getGoScore() < turnDeck.scoreList.getScore()) {
                 // 고 가능

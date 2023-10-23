@@ -58,4 +58,10 @@ class PlayUtil {
         if (play.aiDeck.getTurn()) return play.aiDeck;
         else return play.playerDeck;
     }
+
+    public static Deck GetWinDeck(PlayMG play) {
+        if (play.aiDeck.getWin()) return play.aiDeck;
+        else if (play.playerDeck.getWin()) return play.playerDeck;
+        else return play.deck;
+    }
 }
