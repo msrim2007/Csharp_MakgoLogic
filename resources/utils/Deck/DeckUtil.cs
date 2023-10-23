@@ -29,7 +29,7 @@ class DeckUtil {
 
     public static void Stop(Deck deck) { deck.setWin(true); }
 
-    public static bool isPresident(Deck deck) {
+    public static bool IsPresident(Deck deck) {
         bool president = false;
         int[] monthCnt = GetMonthCnt(deck);
         foreach (int i in monthCnt) {
@@ -40,15 +40,6 @@ class DeckUtil {
         }
 
         return president;
-    }
-
-    public static void Shake(Deck deck, int month) {
-        deck.scoreList.shake();
-        foreach (Card card in deck.getCardList()) {
-            if (card.getCardMonth() == month) {
-                card.setShake(true);
-            }
-        }
     }
 
     private static void ResetListByMonth(List<Card>[] arr) {

@@ -58,7 +58,14 @@
             Start();
         }
 
+        // 최종 점수 처리 해야함
+
         WriteField();
+        WriteScore();
+
+        if (playerDeck.getWin()) Console.WriteLine("[ PLAYER WIN ]");
+        else if (aiDeck.getWin()) Console.WriteLine("[ AI WIN ]");
+        else Console.WriteLine("[ DRAW ]");
     }
 
     private static void Start() {
@@ -82,7 +89,7 @@
             Console.Write("선택 : ");
             choice = int.Parse(Console.ReadLine());
             Console.WriteLine();
-        } else choice = rand.Next(0, fieldDeck.getLength() - 1);
+        } else choice = rand.Next(0, turnDeck.getLength() - 1);
 
         Card choiceCard = turnDeck.getCard(choice);
         // 카드 필드로 옮기고
@@ -100,12 +107,13 @@
             takeDeck.addCard(choiceCard); // 가져올 패 리스트에 넣고
             fieldDeck.getLastCard().setIsTake(true);
             turnDeck.scoreList.steal(); // 피 뺏어오게끔 설정
-            Draw(choiceCard);
+            Draw(choiceCard, false);
         } else if (fieldByMonth.Count >= 1) {
             // 필드에 맞는 패가 하나라도 있는 경우
             if (fieldByMonth.Count == 3) {
                 // 필드에 맞는 패가 3개인 경우 (패 먹고 상대 패 뺏어옴)
-                fieldDeck.getCardList().ForEach(card => { // 4개 반복될거임
+                // 점수필드로 가져가긴 하는데 패 한장이 필드에 남는 이슈 있음..
+                fieldDeck.getCardList().ForEach(card => {
                     if (card.getCardMonth() == choiceCard.getCardMonth()) {
                         takeDeck.addCard(card);
                         card.setIsTake(true);
@@ -121,7 +129,7 @@
                         && (tmp.ElementAt(0).getCardOption() != tmp.ElementAt(1).getCardOption())) {
                         // 피인경우 쌍피(11월)가 있을수 있으니 선택하게끔 함
                         if (isPlayer) {
-                            Console.Write("0 : " + tmp.ElementAt(0).ToString() + "1 : " + tmp.ElementAt(1).ToString() + " > ");
+                            Console.Write("0 : " + tmp.ElementAt(0).ToString() + ", 1 : " + tmp.ElementAt(1).ToString() + " > ");
                             choice = int.Parse(Console.ReadLine());
                             Console.WriteLine();
                         } else choice = rand.Next(0, 1);
@@ -143,7 +151,7 @@
                 } else {
                     // 카드 타입이 다른 경우                    
                     if (isPlayer) {
-                        Console.Write("0 : " + tmp.ElementAt(0).ToString() + "1 : " + tmp.ElementAt(1).ToString());
+                        Console.Write("0 : " + tmp.ElementAt(0).ToString() + ", 1 : " + tmp.ElementAt(1).ToString() + " > ");
                         choice = int.Parse(Console.ReadLine());
                         Console.WriteLine();
                     } else choice = rand.Next(0, 1);
@@ -167,7 +175,8 @@
                             turnDeck.removeCard(turnDeck.getCard(i));
                         }
                     }
-                    // 폭탄인 경우 폭탄 패를 2개 가져오도록 함. (구현 필요)
+                    turnDeck.addCard(new Card(0, CardType.Boom, 0));
+                    turnDeck.addCard(new Card(0, CardType.Boom, 0));
                     turnDeck.scoreList.steal();
                 } else {
                     // 핸드에 같은 월이 3개가 아닌 경우 (일반적인 처리.)
@@ -179,10 +188,10 @@
                 }
             }
 
-            Draw(choiceCard);
+            Draw(choiceCard, false);
         } else {
             // 필드에 맞는 패가 없는 경우
-            if (turnByMonth.Count == 3 && !choiceCard.isShaked()) {
+            if (turnByMonth.Count == 3 && !turnDeck.scoreList.shaked()) {
                 // 핸드에 같은 월 3개인 경우 
                 // 안흔들었으면 선택할 수 있게 함
                 if (isPlayer) {
@@ -195,31 +204,35 @@
                     // 흔들기
                     Console.WriteLine("흔들었습니다.");
                     Console.WriteLine();
-                    turnDeck.scoreList.shake();   // 흔든 횟수 증가만 시켜줌 (나중에 계산할때 사용)
+                    // 선택한 카드 돌려줌
+                    turnDeck.addCard(choiceCard);
+                    fieldDeck.removeLastCard();
+                    turnDeck.scoreList.shake();
                     if (!isPlayer) {
                         turnDeck.getCardList().ForEach(card => {
                             if (card.getCardMonth() == choiceCard.getCardMonth()) {
                                 card.setOpen(true);
-                                card.setShake(true);
                             }
                         });
                     }
                     HandOut(true); // 다시 턴 진행
                 } else {
                     // 그냥 필드에 넣기 (필드에 맞는 패(월)가 없는 경우임)
-                    Draw(choiceCard);
+                    Draw(choiceCard, false);
                 }
             } else {
                 // 그냥 필드에 넣기 (필드에 맞는 패(월)가 없는 경우임)
-                Draw(choiceCard);
+                Draw(choiceCard, false);
             }
         }
     }
 
     // 덱 드로우
-    private static void Draw(Card chooseCard) {
-        DeckUtil.InitListByMonth(fieldDeck);
-        DeckUtil.InitListByMonth(turnDeck);
+    private static void Draw(Card chooseCard, bool drawed) {
+        if (!drawed) {
+            DeckUtil.InitListByMonth(fieldDeck);
+            DeckUtil.InitListByMonth(turnDeck);
+        }
         Card drawCard = new Card(deck.getLastCard());
         deck.removeLastCard();
         fieldDeck.addCard(drawCard);
@@ -231,13 +244,11 @@
 
         // 보너스패인지 여부
         if (drawCard.getCardMonth() == 0) {
-            // 보너스패 필드에 놓고 다시 드로우
-            drawCard.setIsTake(true);
-            fieldDeck.addCard(drawCard);
+            fieldDeck.getLastCard().setIsTake(true);
             takeDeck.addCard(drawCard);
             turnDeck.scoreList.steal();
 
-            Draw(chooseCard);
+            Draw(chooseCard, true);
         } else if (fieldDeck.getListByMonth(drawCard.getCardMonth()).Count > 0) {
             // 드로우한 패와 맞는 패가 있다면
             if (fieldDeck.getListByMonth(drawCard.getCardMonth()).Count == 3) {
@@ -267,7 +278,7 @@
                             && (tmp.ElementAt(0).getCardOption() == tmp.ElementAt(1).getCardOption())) {
                             // 쌍피, 피 인 경우도 선택하게끔 (어차피 쌍피먹겠찌만)
                             if (isPlayer) {
-                                Console.Write("0 : " + tmp.ElementAt(0).ToString() + "1 : " + tmp.ElementAt(1).ToString() + " > ");
+                                Console.Write("0 : " + tmp.ElementAt(0).ToString() + ", 1 : " + tmp.ElementAt(1).ToString() + " > ");
                                 choice = int.Parse(Console.ReadLine());
                                 Console.WriteLine();
                             } else choice = rand.Next(0, 1);
@@ -280,7 +291,7 @@
                     } else {
                         // 타입이 다르면 선택
                         if (isPlayer) {
-                            Console.Write("0 : " + tmp.ElementAt(0).ToString() + "1 : " + tmp.ElementAt(1).ToString());
+                            Console.Write("0 : " + tmp.ElementAt(0).ToString() + ", 1 : " + tmp.ElementAt(1).ToString() + " > ");
                             choice = int.Parse(Console.ReadLine());
                             Console.WriteLine();
                         } else choice = rand.Next(0, 1);
@@ -314,8 +325,38 @@
         });
         takeDeck = new(DeckType.Player);
 
-        // 점수 확인해서 났는지 여부 확인 (고 스톱 처리)
+        // 피 뺏어오고
+        for (int i = 0; i < turnDeck.scoreList.getSteal(); ++i) {
+            if (opponentDeck.scoreList.getBloodList().Count <= 0) break;
+            turnDeck.scoreList.addBlood(opponentDeck.scoreList.getBlood());
+            turnDeck.scoreList.getBloodList().Last().setOpen(true);
+        }
+        turnDeck.scoreList.setSteal();
+
         WriteScore();
+
+        // 점수 확인해서 났는지 여부 확인 (고 스톱 처리)
+        turnDeck.scoreList.scoreCheck();
+        if (turnDeck.scoreList.getScore() >= 7) {
+            if (turnDeck.scoreList.getGoScore() < turnDeck.scoreList.getScore()) {
+                // 고 가능
+                int choice = -1;
+                if (turnDeck.Equals(playerDeck)) {
+                    Console.Write("0 : 고, 1 : 스탑 > ");
+                    choice = int.Parse(Console.ReadLine());
+                } else choice = rand.Next(0, 1);
+
+                if (choice == 0) {
+                    turnDeck.scoreList.go();
+                    Console.WriteLine("[" + turnDeck.scoreList.getGoCount() + "고!]");
+                    Console.WriteLine();
+                } else {
+                    Console.WriteLine("[스탑!]");
+                    PlayUtil.Stop(play, turnDeck);
+                    return;
+                }
+            }
+        }
 
         // 턴 넘기기
         if (turnDeck.Equals(playerDeck)) {
@@ -341,9 +382,9 @@
 
     private static void WriteScore() {
         Console.WriteLine("============= SCORE ===============");
-        Console.WriteLine("[AI]");
+        Console.WriteLine("[AI] " + aiDeck.scoreList.getScore() + "점");
         Console.WriteLine(aiDeck.scoreList.ToString());
-        Console.WriteLine("[PLAYER]");
+        Console.WriteLine("[PLAYER]" + playerDeck.scoreList.getScore() + "점");
         Console.WriteLine(playerDeck.scoreList.ToString());
         Console.WriteLine("===================================");
         Console.WriteLine();

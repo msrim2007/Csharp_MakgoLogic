@@ -32,7 +32,7 @@ class Deck {
     public void addListByMonth(int month, Card card) { this.listByMonth[month].Add(card); }
     public List<Card> getListByMonth(int month) { return this.listByMonth[month]; }
     public List<Card>[] getListByMonth() { return this.listByMonth; }
-    
+
     private void Shuffle() {
         Random rand = new();
         int n = this.cardList.Count;

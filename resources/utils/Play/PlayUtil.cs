@@ -38,12 +38,15 @@ class PlayUtil {
         bool end = false;
 
         if (play.stop) end = true;
-        else if (LeftCardLegnth(play) == 0) end = true;
-        if (DeckUtil.isPresident(play.aiDeck) || DeckUtil.isPresident(play.playerDeck)) {
+        else if (LeftCardLegnth(play) == 0) {
+            Console.WriteLine("[남은 카드가 없습니다.]");
+            end = true;
+        }
+        if (DeckUtil.IsPresident(play.aiDeck) || DeckUtil.IsPresident(play.playerDeck)) {
             Console.WriteLine("[총통입니다.]");
             end = true;
-            if (!(DeckUtil.isPresident(play.aiDeck) && DeckUtil.isPresident(play.playerDeck))) {
-                if (DeckUtil.isPresident(play.aiDeck)) play.aiDeck.setWin(true);
+            if (!(DeckUtil.IsPresident(play.aiDeck) && DeckUtil.IsPresident(play.playerDeck))) {
+                if (DeckUtil.IsPresident(play.aiDeck)) play.aiDeck.setWin(true);
                 else play.playerDeck.setWin(true);
             }
         }
