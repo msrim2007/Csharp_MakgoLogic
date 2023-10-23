@@ -279,7 +279,8 @@
             } else if (fieldDeck.getListByMonth(drawCard.getCardMonth()).Count == 2) {
                 // 필드에 드로우와 맞는 패가 2개인 경우
                 if (drawCard.getCardMonth() == chooseCard.getCardMonth()) {
-                    // 뻑
+                    // 뻑 
+                    DeckUtil.InitListByMonth(fieldDeck);
                     fieldDeck.getListByMonth(drawCard.getCardMonth()).ForEach(card => {
                         card.setIsTake(false);
                         takeDeck.removeCard(card);
