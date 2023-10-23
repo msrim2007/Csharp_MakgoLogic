@@ -318,9 +318,20 @@
     private static void TurnEnd() {
         // 카드 처리 (takeDeck 반복하면서 필드에서 해당 카드 제거 및 턴플레이어의 점수필드에 추가)
         for (int i = 0; i < fieldDeck.getLength(); ++i) {
-            if (fieldDeck.getCard(i).getIsTake()) fieldDeck.removeCard(i);
+            if (fieldDeck.getCard(i).getIsTake()) fieldDeck.removeCard(i--);
         }
         takeDeck.getCardList().ForEach(card => {
+            if (card.getCardMonth() == (int) CardMonth.Sep
+                && card.getCardType() == (int) CardType.Paint) {
+                // 9월 열끗인경우 쌍피로 바꿀수 있게 선택
+                int choice = -1;
+                if (turnDeck.Equals(playerDeck)) {
+                    Console.Write("[9월 열끗] 을 [쌍피] 로 사용하시겠습니까? (0 : 쌍피, 1 : 열끗) > ");
+                    choice = int.Parse(Console.ReadLine());
+                } else choice = rand.Next(0, 1);
+
+                if (choice == 0) card = new Card(CardMonth.Sep, CardType.Blood, CardOption.Double);
+            }
             turnDeck.scoreList.addCard(card);
         });
         takeDeck = new(DeckType.Player);
