@@ -2,12 +2,11 @@ using System.ComponentModel;
 
 class Deck {
     private List<Card> cardList = new();
-    private List<Card>[] listByMonth = Array.Empty<List<Card>>();
+    private List<Card>[] listByMonth = new List<Card>[13];
     public Score scoreList = new();
     private int deckType = 0;
     private bool turn = false;
     private bool win = false;
-    private int stealCount = 0;
 
     public Deck(int type) {
         this.deckType = type;
@@ -33,9 +32,7 @@ class Deck {
     public void addListByMonth(int month, Card card) { this.listByMonth[month].Add(card); }
     public List<Card> getListByMonth(int month) { return this.listByMonth[month]; }
     public List<Card>[] getListByMonth() { return this.listByMonth; }
-    public void steal() { ++this.stealCount; }
-    public void setSteal() { this.stealCount = 0; }
-
+    
     private void Shuffle() {
         Random rand = new();
         int n = this.cardList.Count;

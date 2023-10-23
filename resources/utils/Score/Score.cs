@@ -7,10 +7,23 @@ class Score {
     private int score = 0;
     private int goScore = 0;
     private int shakeCount = 0;
+    private int stealCount = 0;
 
+    public void addGwang(Card card) { this.gwangList.Add(new Card(card)); }
+    public void addPaint(Card card) { this.paintList.Add(new Card(card)); }
+    public void addLine(Card card) { this.lineList.Add(new Card(card)); }
+    public void addBlood(Card card) { this.bloodList.Add(new Card(card)); }
+
+    public void steal() { ++this.stealCount; }
     public void shake() { ++this.shakeCount; }
+
+    public int getSteal() { return this.stealCount; }
     public int getShakeCount() { return this.shakeCount; }
-    public int getBloodCnt() { return this.bloodList.Count; }
+    
+    public List<Card> getBloodList() { return this.bloodList; }
+    public List<Card> getGwangList() { return this.gwangList; }
+    public List<Card> getLineList() { return this.lineList; }
+    public List<Card> getPaintList() { return this.paintList; }
     
     public Card getBlood() {
         bool removed = false;
@@ -59,5 +72,29 @@ class Score {
         else  gwangList.Add(addCard);
     }
 
-    
+    public override string ToString() {
+        string str = "";
+
+        this.gwangList.ForEach(gwang => {
+            str += gwang.ToString();
+        });
+        if (this.gwangList.Count > 0) str += "\n";
+
+        this.paintList.ForEach(paint => {
+            str += paint.ToString();
+        });
+        if (this.paintList.Count > 0) str += "\n";  
+
+        this.lineList.ForEach(line => {
+            str += line.ToString();
+        });
+        if (this.lineList.Count > 0) str += "\n";
+
+        this.bloodList.ForEach(blood => {
+            str += blood.ToString();
+        });
+        if (this.bloodList.Count > 0) str += "\n";
+
+        return str;
+    }
 }
