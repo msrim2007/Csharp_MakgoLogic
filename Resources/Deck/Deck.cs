@@ -3,7 +3,7 @@ class Deck {
     private Score score = new();
     private int type;
     private bool turn = false;
-    private int fuckCount = 0;
+    private int pooCount = 0;
     private bool win = false;
 
     public Deck(int type) {
@@ -13,7 +13,7 @@ class Deck {
 
     public void go() { this.score.go(); }
     public void setWin() { this.win = true; }
-    public void fuck() { ++this.fuckCount; }
+    public void foo() { ++this.pooCount; }
     public void setTurn(bool turn) { this.turn = turn; }
     public void addCard(Card card) { 
         this.cardList.Add(card); 
@@ -26,7 +26,7 @@ class Deck {
     public bool isWin() { return this.win; }
     public bool isTurn() { return this.turn; }
     public DeckType getType() { return (DeckType) this.type; }
-    public int getFuckCount() { return this.fuckCount; }
+    public int getPooCount() { return this.pooCount; }
     public List<Card> getCardList() { return this.cardList; }
     public int getCount() { return this.cardList.Count; }
     public Card getCard(int index) { return this.cardList.ElementAt(index); }

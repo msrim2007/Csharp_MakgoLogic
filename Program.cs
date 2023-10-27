@@ -266,7 +266,7 @@
             // 드로우한 패도 필드로
             game.getField().addCard(DeckUtil.GetLastCardForMove(game.getDeck()));
             game.getField().getCardList().Last().setOpen(true);
-            game.getTurn().fuck();
+            game.getTurn().foo();
             return;
         }
 

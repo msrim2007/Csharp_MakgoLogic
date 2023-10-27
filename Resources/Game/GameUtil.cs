@@ -47,12 +47,12 @@ class GameUtil {
             }
         }
 
-        if (game.getPlayer().getFuckCount() >= 3) {
+        if (game.getPlayer().getPooCount() >= 3) {
             Console.WriteLine("[ 플레이어가 3뻑으로 승리했습니다. ]");
             game.getPlayer().setWin();
             end = true;
             return end;
-        } else if (game.getAi().getFuckCount() >= 3) {
+        } else if (game.getAi().getPooCount() >= 3) {
             Console.WriteLine("[ AI가 3뻑으로 승리했습니다. ]");
             game.getAi().setWin();
             end = true;
