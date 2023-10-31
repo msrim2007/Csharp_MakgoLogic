@@ -31,10 +31,10 @@ class Game {
         str += this.ai.toString();
         str += "\n[ AI SCORE FIELD ]" + this.ai.getScore().getTotalScore() + " 점\n";
         str += this.ai.getScore().toString();
-
-        str += this.deck.toString();
         str += "\n\n";
-
+        
+        str += this.deck.toString();
+        str += "\n";
         str += this.field.toString();
         str += "\n\n";
 

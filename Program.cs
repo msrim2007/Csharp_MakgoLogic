@@ -158,7 +158,10 @@
             // 보너스 카드인 경우
             game.getTurn().steal(); // 카드 뺏어오고
             game.getTurn().addScore(DeckUtil.GetCardForMove(game.getTurn(), choice)); // 바로 점수필드로 옮김
-            return choiceCard; // 바로 턴 종료 (드로우 시작)
+
+            // 덱에서 핸드로 카드 하나 가져오고
+            game.getTurn().addCard(DeckUtil.GetLastCardForMove(game.getDeck()));
+            return Turn(); // 다시 턴 시작
         } else if (game.getTurn().getCountByMonth(choiceCard.getMonth()) == 3 && !game.getTurn().isShaked()) {
             if (game.getField().getCountByMonth(choiceCard.getMonth()) == 0) {
                 // 핸드에 선택한 카드와 같은 월이 3장 있고 흔든적이 없다면 (필드에도 없어야 흔듬)
