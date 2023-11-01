@@ -188,9 +188,14 @@
                 game.getTurn().steal();
                 // 선택한 패 더미덱에 넣고
                 game.getDummy().addCard(DeckUtil.GetCardForMove(game.getTurn(), choice));
-                foreach (int i in game.getField().getCardIndexByMonth(choiceCard.getMonth())) {
-                    game.getDummy().addCard(DeckUtil.GetCardForMove(game.getField(), i));
-                } // 더미로 옮김
+                while(game.getField().getCardIndexByMonth(choiceCard.getMonth()).Length > 0) {
+                    game.getDummy().addCard(DeckUtil.GetCardForMove(game.getField(), game.getField().getCardIndexByMonth(choiceCard.getMonth())[0]));
+                }
+                
+                // 보너스패가 끼여있다면그것도가져온다.
+                while(game.getField().getCardIndexByPooMonth(choiceCard.getMonth()).Length > 0) {
+                    game.getDummy().addCard(DeckUtil.GetCardForMove(game.getField(), game.getField().getCardIndexByPooMonth(choiceCard.getMonth())[0]));
+                }
             } else if (game.getField().getCountByMonth(choiceCard.getMonth()) == 2) {
                 // 필드에 맞는 패가 2개인 경우
                 List<Card> cardByMonth = game.getField().getListByMonth(choiceCard.getMonth());
@@ -219,8 +224,8 @@
                     game.getTurn().steal();
                     // 폭탄이면 덱에있는 패 모두 더미로 옮김
                     game.getDummy().addCard(DeckUtil.GetCardForMove(game.getField(), game.getField().getCardIndexByMonth(choiceCard.getMonth())[0]));
-                    foreach (int index in game.getTurn().getCardIndexByMonth(choiceCard.getMonth())) {
-                        game.getDummy().addCard(DeckUtil.GetCardForMove(game.getTurn(), index));
+                    while(game.getTurn().getCardIndexByMonth(choiceCard.getMonth()).Length > 0) {
+                        game.getDummy().addCard(DeckUtil.GetCardForMove(game.getTurn(), game.getTurn().getCardIndexByMonth(choiceCard.getMonth())[0]));
                     }
                 } else {
                     game.getDummy().addCard(DeckUtil.GetCardForMove(game.getTurn(), choice));
@@ -259,12 +264,15 @@
         // 더미 먼저 비교 하고
         if (dummyCount == 2) {
             Console.WriteLine("[ 뻑 ]");
-
             // 더미에 같은 월 2장 있다면 뻑이니 더미에 있는 모든 패를 다시 필드로 돌려보내고 return
             int dummyCountForBack = game.getDummy().getCount();
             for (int i = 0; i < dummyCountForBack; ++i) {
                 game.getField().addCard(DeckUtil.GetLastCardForMove(game.getDummy()));
                 game.getField().getCardList().Last().setOpen(true);
+                // 보너스패도 묶이는 경우 보너스패가 묶인 패의 월을 저장해둔다.
+                if (game.getField().getCardList().Last().getMonth() == CardMonth.Bonus) {
+                    game.getField().getCardList().Last().setPooMonth(drawCard.getMonth());
+                }
             }
             // 드로우한 패도 필드로
             game.getField().addCard(DeckUtil.GetLastCardForMove(game.getDeck()));
@@ -278,9 +286,13 @@
             if (fieldCount == 3) {
                 // 3장 있는경우 뻑난거 먹은거고
                 game.getTurn().steal();
-                foreach (int index in game.getField().getCardIndexByMonth(drawCard.getMonth())) {
-                    game.getDummy().addCard(DeckUtil.GetCardForMove(game.getField(), index));
+                while (game.getField().getCardIndexByMonth(drawCard.getMonth()).Length > 0) {
+                    game.getDummy().addCard(DeckUtil.GetCardForMove(game.getField(), game.getField().getCardIndexByMonth(drawCard.getMonth())[0]));
                     game.getDummy().getCardList().Last().setOpen(true);
+                }
+                // 보너스패가 끼여있다면그것도가져온다.
+                while(game.getField().getCardIndexByPooMonth(drawCard.getMonth()).Length > 0) {
+                    game.getDummy().addCard(DeckUtil.GetCardForMove(game.getField(), game.getField().getCardIndexByPooMonth(drawCard.getMonth())[0]));
                 }
             } else if (fieldCount == 2) {
                 // 2장인 경우 타입이 다르면 선택해서 먹도록함

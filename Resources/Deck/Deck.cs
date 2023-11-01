@@ -58,6 +58,16 @@ class Deck {
         return indexs;
     }
 
+    public int[] getCardIndexByPooMonth(CardMonth month) {
+        int[] indexs = new int[this.getCountByMonth(CardMonth.Bonus)];
+        int j = 0;
+        for (int i = 0; i < this.getCount(); ++i) {
+            if (this.getCard(i).getPooMonth() == month) indexs[j++] = i;
+        }
+
+        return indexs;
+    }
+
     public List<Card> getListByMonth(CardMonth month) {
         List<Card> cards = new();
         this.cardList.ForEach(card => {

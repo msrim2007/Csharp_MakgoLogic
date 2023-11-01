@@ -4,6 +4,7 @@ class Card {
     private int type;
     private int option;
     private bool open = false;
+    private int pooMonth;
 
     // generator
     public Card(int month, int type, int option) {
@@ -17,11 +18,13 @@ class Card {
     public void setType(int type) { this.type = type; }
     public void setOption(int option) { this.option = option; } 
     public void setOpen(bool open) { this.open = true; }
+    public void setPooMonth(CardMonth month) { this.pooMonth = (int) month; }
 
     // getter
     public CardMonth getMonth() { return (CardMonth) this.month; }
     public CardType getType() { return (CardType) this.type; }
     public CardOption getOption() { return (CardOption) this.option; }
+    public CardMonth getPooMonth() { return (CardMonth) this.pooMonth; }
 
     public bool isOpen() { return this.open; }
 
