@@ -171,7 +171,7 @@
                     shake = GetInput();
                 } else shake = rand.Next(0, 1) == 0 ? "Y" : "N";
                 if (shake.Equals("Y")) {
-                    // 흔들기
+                    Console.WriteLine("[ 흔들었습니다. ]");
                     game.getTurn().getListByMonth(choiceCard.getMonth()).ForEach(card => card.setOpen(true));
                     game.getTurn().shake();
                     Console.WriteLine(game.toString());
@@ -219,7 +219,7 @@
             } else {
                 // 필드에 맞는 패가 1개인 경우
                 if (game.getTurn().getCountByMonth(choiceCard.getMonth()) == 3) {
-                    // 폭탄
+                    Console.WriteLine("[ 폭탄 ]");
                     game.getTurn().shake();
                     game.getTurn().steal();
                     // 폭탄이면 덱에있는 패 모두 더미로 옮김
@@ -263,22 +263,33 @@
 
         // 더미 먼저 비교 하고
         if (dummyCount == 2) {
-            Console.WriteLine("[ 뻑 ]");
-            // 더미에 같은 월 2장 있다면 뻑이니 더미에 있는 모든 패를 다시 필드로 돌려보내고 return
-            int dummyCountForBack = game.getDummy().getCount();
-            for (int i = 0; i < dummyCountForBack; ++i) {
-                game.getField().addCard(DeckUtil.GetLastCardForMove(game.getDummy()));
-                game.getField().getCardList().Last().setOpen(true);
-                // 보너스패도 묶이는 경우 보너스패가 묶인 패의 월을 저장해둔다.
-                if (game.getField().getCardList().Last().getMonth() == CardMonth.Bonus) {
-                    game.getField().getCardList().Last().setPooMonth(drawCard.getMonth());
+            if (fieldCount == 0) {
+                Console.WriteLine("[ 뻑 ]");
+                // 더미에 같은 월 2장 있다면 뻑이니 더미에 있는 모든 패를 다시 필드로 돌려보내고 return
+                int dummyCountForBack = game.getDummy().getCount();
+                for (int i = 0; i < dummyCountForBack; ++i) {
+                    game.getField().addCard(DeckUtil.GetLastCardForMove(game.getDummy()));
+                    game.getField().getCardList().Last().setOpen(true);
+                    // 보너스패도 묶이는 경우 보너스패가 묶인 패의 월을 저장해둔다.
+                    if (game.getField().getCardList().Last().getMonth() == CardMonth.Bonus) {
+                        game.getField().getCardList().Last().setPooMonth(drawCard.getMonth());
+                    }
                 }
+                // 드로우한 패도 필드로
+                game.getField().addCard(DeckUtil.GetLastCardForMove(game.getDeck()));
+                game.getField().getCardList().Last().setOpen(true);
+                game.getTurn().foo();
+                return;
+            } else {
+                // 따닥
+                Console.WriteLine("[ 따닥 ]");
+                game.getTurn().steal();
+                // 드로우한패 + 필드에 있는 패 더미로
+                game.getDummy().addCard(DeckUtil.GetLastCardForMove(game.getDeck()));
+                game.getDummy().getCardList().Last().setOpen(true);
+                game.getDummy().addCard(DeckUtil.GetCardForMove(game.getField(), game.getField().getCardIndexByMonth(drawCard.getMonth())[0]));
+                game.getDummy().getCardList().Last().setOpen(true);
             }
-            // 드로우한 패도 필드로
-            game.getField().addCard(DeckUtil.GetLastCardForMove(game.getDeck()));
-            game.getField().getCardList().Last().setOpen(true);
-            game.getTurn().foo();
-            return;
         }
 
         // 더미에 패 없는 경우 (필드만 비교)
