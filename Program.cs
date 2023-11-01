@@ -100,7 +100,8 @@
                 }
 
                 // 점수 계산
-                ScoreUtil.CalcScore(game.getTurn().getScore());
+                ScoreUtil.CalcScore(game.getPlayer().getScore()); 
+                ScoreUtil.CalcScore(game.getAi().getScore()); 
 
                 // 고 스톱 가능 여부 및 선택
                 if (game.getTurn().getScore().getTotalScore() >= 7 && game.getTurn().getScore().getTotalScore() > game.getTurn().getScore().getGoCount()) {
@@ -109,6 +110,8 @@
                         GameUtil.stop(game);
                         return;
                     }
+
+                    game.toString();
                     
                     if (game.getTurn().Equals(player)) {
                         Console.WriteLine("[ 고 / 스탑 (1 : 고, 2 : 스탑) ]");

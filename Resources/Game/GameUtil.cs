@@ -82,9 +82,13 @@ class GameUtil {
     public static void stop(Game game) {
         game.getTurn().setWin();
         if (game.getTurn().Equals(game.getPlayer())) {
+            ScoreUtil.CalcScore(game.getPlayer().getScore(), true, game.getAi().getScore());
+            game.getPlayer().getScore().toString();
             Console.WriteLine("[ 플레이어 승리 ]");
             ScoreUtil.CalcScore(game.getTurn().getScore(), true, game.getAi().getScore());
         } else {
+            ScoreUtil.CalcScore(game.getPlayer().getScore(), true, game.getAi().getScore());
+            game.getAi().getScore().toString();
             Console.WriteLine("[ AI 승리 ]");
             ScoreUtil.CalcScore(game.getTurn().getScore(), true, game.getPlayer().getScore());
         }
